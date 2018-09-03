@@ -54,12 +54,10 @@ app.set("view engine", "hbs");
 
 //PASSPORT SETUP
 passport.serializeUser((user, cb) => {
-  console.log(user.id, user.collection.collectionName);
   cb(null, { id: user.id, role: user.collection.collectionName });
 });
 
 passport.deserializeUser((user, cb) => {
-  console.log("ID: ", user);
   if (user.role === "translators") {
     Translator.findById(user.id, (err, user) => {
       if (err) {
@@ -72,7 +70,6 @@ passport.deserializeUser((user, cb) => {
       if (err) {
         return cb(err);
       }
-      console.log("Hallo");
       cb(null, user);
     });
   }

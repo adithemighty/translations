@@ -11,8 +11,9 @@ const mongoose = require("mongoose");
 const path = require("path");
 const flash = require("connect-flash");
 const authRouter = require("./routes/auth");
+const indexRouter = require("./routes/index");
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("./models/user");
+// const User = require("./models/user");
 const bcrypt = require("bcrypt");
 const fileUpload = require("express-fileupload");
 const fs = require("fs");
@@ -148,6 +149,7 @@ app.use(passport.session());
 
 //ALL ROUTES
 
+app.use("/", indexRouter);
 app.use("/", authRouter);
 
 //ERRORS SETUP

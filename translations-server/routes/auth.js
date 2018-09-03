@@ -3,7 +3,7 @@ const passport = require("passport");
 const router = express.Router();
 const { ensureLoggedIn, ensureLoggedOut } = require("connect-ensure-login");
 const fs = require("fs");
-const User = require("../models/user");
+// const User = require("../models/user");
 const fileUpload = require("express-fileupload");
 
 router.get("/login", ensureLoggedOut(), (req, res) => {
@@ -20,8 +20,19 @@ router.post(
   })
 );
 
-router.get("/signup", (req, res) => {
-  res.render("auth/signup", { message: req.flash("error") });
+router.get("/signup/:role", (req, res) => {
+  console.log(req.params);
+  if (req.params.role === "wo") {
+    res.render("auth/signup", {
+      // message: req.flash("error"),
+      wo: true
+    });
+  } else if (req.params.role === "translator") {
+    res.render("auth/signup", {
+      // message: req.flash("error"),
+      translator: true
+    });
+  }
 });
 
 router.post(

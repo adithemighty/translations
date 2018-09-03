@@ -23,7 +23,7 @@ const userSchema = Schema({
   },
   role: {
     type: String,
-    enum: ["Volunteer translator", "Professional translator"],
+    enum: ["Volunteer", "Professional"],
     required: true
   },
   location: { type: Schema.Types.ObjectId, ref: "Location" },

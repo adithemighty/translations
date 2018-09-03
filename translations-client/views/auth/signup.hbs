@@ -20,17 +20,18 @@
                     <p>Role:</p>
                     <br>
                     <label for="volunteer">Volunteer translator</label>
-                    <input type="radio" name="role" id="volunteer" value="Volunteer translator">
+                    <input type="radio" name="role" id="volunteer" value="Volunteer">
                     <label for="professional">Professional translator</label>
-                    <input type="radio" name="role" id="professional" value="Professional translator">
+                    <input type="radio" name="role" id="professional" value="Professional">
                 </div>
-                {{/if}}
+                {{/if}} {{#if wo}}
                 <div class="form-group">
+                    <input type="hidden" name="role" value="wo">
                     <label for="idNumber">ID number:</label>
                     <input id="idNumber" type="idNumber" name="idNumber" class="form-control">
                 </div>
 
-                {{#if WO}} {{/if}}
+                {{/if}}
                 <button type="submit">Signup</button>
             </form>
         </div>

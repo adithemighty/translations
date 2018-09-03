@@ -20,7 +20,7 @@ const userSchema = Schema({
   },
   role: {
     type: String,
-    enum: ["Welfare officer", "Volunteer translator", "Professional translator"]
+    enum: ["Volunteer translator", "Professional translator"]
     // required: true
   }
 });

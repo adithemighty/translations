@@ -77,27 +77,42 @@ passport.deserializeUser((user, cb) => {
   }
 });
 
-// passport.use(
-//   "local-login",
-//   new LocalStrategy((username, password, next) => {
-//     //TODO ADD AUTH WITH EMAIL
-//     console.log("signin");
+passport.use(
+  "local-login",
+  new LocalStrategy((username, password, next) => {
+    //TODO ADD AUTH WITH EMAIL
+    console.log("signin", username);
+    if (username === "wo") {
+      WO.findOne({ username }, (err, user) => {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          return next(null, false, { message: "Incorrect username" });
+        }
+        if (!bcrypt.compareSync(password, user.password)) {
+          return next(null, false, { message: "Incorrect password" });
+        }
 
-//     User.findOne({ username }, (err, user) => {
-//       if (err) {
-//         return next(err);
-//       }
-//       if (!user) {
-//         return next(null, false, { message: "Incorrect username" });
-//       }
-//       if (!bcrypt.compareSync(password, user.password)) {
-//         return next(null, false, { message: "Incorrect password" });
-//       }
+        return next(null, user);
+      });
+    } else if (username === "translator") {
+      Translator.findOne({ username }, (err, user) => {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          return next(null, false, { message: "Incorrect username" });
+        }
+        if (!bcrypt.compareSync(password, user.password)) {
+          return next(null, false, { message: "Incorrect password" });
+        }
 
-//       return next(null, user);
-//     });
-//   })
-// );
+        return next(null, user);
+      });
+    }
+  })
+);
 
 passport.use(
   "local-signup",

@@ -6,19 +6,23 @@ const fs = require("fs");
 // const User = require("../models/user");
 const fileUpload = require("express-fileupload");
 
-// router.get("/login", ensureLoggedOut(), (req, res) => {
-//   res.render("auth/login", { message: req.flash("error") });
-// });
+router.get(
+  "/login",
+  // ensureLoggedOut(),
+  (req, res) => {
+    res.render("auth/login", { message: req.flash("error") });
+  }
+);
 
-// router.post(
-//   "/login",
-//   ensureLoggedOut(),
-//   passport.authenticate("local-login", {
-//     successRedirect: "/",
-//     failureRedirect: "/login",
-//     failureFlash: true
-//   })
-// );
+router.post(
+  "/login",
+  // ensureLoggedOut(),
+  passport.authenticate("local-login", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true
+  })
+);
 
 router.post(
   "/signup",

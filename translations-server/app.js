@@ -13,7 +13,8 @@ const flash = require("connect-flash");
 const authRouter = require("./routes/auth");
 const indexRouter = require("./routes/index");
 const LocalStrategy = require("passport-local").Strategy;
-// const User = require("./models/user");
+const Translator = require("./models/Translator");
+const WO = require("./models/WO");
 const bcrypt = require("bcrypt");
 const fileUpload = require("express-fileupload");
 const fs = require("fs");
@@ -93,52 +94,75 @@ passport.use(
     { passReqToCallback: true },
     (req, username, password, next) => {
       // To avoid race conditions
+      const { email, role, idNumber } = req.body;
+      console.log(role);
       process.nextTick(() => {
-        User.findOne(
-          {
-            username
-          },
-          (err, user) => {
-            if (err) {
-              return next(err);
-            }
+        const hashPass = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+        //if there is a role in the req.body this request comes from the translator sign up
+        if (role === "translator") {
+          Translator.findOne(
+            {
+              username
+            },
+            (err, user) => {
+              if (err) {
+                return next(err);
+              }
+              if (user) {
+                return next(null, false);
+              } else {
+                // Destructure the body
+                console.log("i am in translator", req.body);
+                // const { username, email, password, role } = req.body;
+                // const hashPass = bcrypt.hashSync(
+                //   password,
+                //   bcrypt.genSaltSync(8),
+                //   null
+                // );
 
-            if (user) {
-              return next(null, false);
-            } else {
-              // Destructure the body
-              const { pic } = req.files;
-              console.log(req.body, req.files);
-              const { username, email, password, role } = req.body;
-              const hashPass = bcrypt.hashSync(
-                password,
-                bcrypt.genSaltSync(8),
-                null
-              );
-              pic.mv(`../translations-client/public/img/${pic.name}`, err => {
-                if (err) res.status(500).send(err);
-
-                upload(`../translations-client/public/img/${pic.name}`).then(
-                  result => {
-                    new User({
-                      username,
-                      email,
-                      password: hashPass,
-                      profileImageUrl: result.secure_url,
-                      role
-                    })
-                      .save()
-                      .then(result => {
-                        fs.unlinkSync(
-                          `../translations-client/public/img/${pic.name}`
-                        );
-                      });
-                  }
-                );
-              });
+                new Translator({
+                  username,
+                  email,
+                  password: hashPass,
+                  role
+                })
+                  .save()
+                  .then(result => {
+                    console.log(result);
+                  });
+              }
             }
-          }
-        );
+          );
+        } else if (role === "wo") {
+          console.log("i am in wo");
+          WO.findOne(
+            {
+              username
+            },
+            (err, user) => {
+              if (err) {
+                return next(err);
+              }
+              if (user) {
+                return next(null, false);
+              } else {
+                // Destructure the body
+                console.log("req body:", req.body);
+
+                new WO({
+                  username,
+                  email,
+                  password: hashPass,
+                  idNumber
+                })
+                  .save()
+                  .then(result => {
+                    console.log(result);
+                  });
+              }
+            }
+          );
+        }
       });
     }
   )

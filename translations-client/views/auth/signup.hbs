@@ -25,6 +25,12 @@
                     <input type="radio" name="role" id="professional" value="Professional translator">
                 </div>
                 {{/if}}
+                <div class="form-group">
+                    <label for="idNumber">ID number:</label>
+                    <input id="idNumber" type="idNumber" name="idNumber" class="form-control">
+                </div>
+
+                {{#if WO}} {{/if}}
                 <button type="submit">Signup</button>
             </form>
         </div>

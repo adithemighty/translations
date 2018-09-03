@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Location = require("./Location");
-const Language = require("./Meeting");
+const Meeting = require("./Meeting");
 const Language = require("./Language");
 
 const userSchema = Schema({

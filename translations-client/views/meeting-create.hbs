@@ -2,7 +2,7 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-6 centered-form">
-            <form action="/meeting" method="post">
+            <form action="/meeting-create/:id" method="post">
                 <div class="form-group">
                     <label for="date">Date</label>
                     <input type="date" name="date" class="form-control">
@@ -16,12 +16,7 @@
                 <span>Participants</span>
                 <div class="form-group">
                     <label for="translator">Translator</label>
-                    <input type="text" name="translator" class="form-control">
-                </div>
-
-                <div class="form-group">
-                    <label for="wo">Welfare Officer</label>
-                    <input type="text" name="wo" class="form-control">
+                    <input type="email" name="translator_mail" class="form-control">
                 </div>
                 <button type="submit">Create Meeting</button>
             </form>

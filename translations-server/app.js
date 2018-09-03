@@ -16,6 +16,7 @@ const meetingRouter = require("./routes/meeting");
 const LocalStrategy = require("passport-local").Strategy;
 const Translator = require("./models/Translator");
 const WO = require("./models/WO");
+const Meeting = require("./models/Meeting");
 const bcrypt = require("bcrypt");
 const fileUpload = require("express-fileupload");
 const fs = require("fs");

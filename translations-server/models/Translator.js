@@ -4,7 +4,7 @@ const Location = require("./Location");
 const Meeting = require("./Meeting");
 const Language = require("./Language");
 
-const userSchema = Schema({
+const translatorSchema = Schema({
   email: {
     type: String,
     required: true,
@@ -47,5 +47,5 @@ const userSchema = Schema({
   prefferedSetting: Array //for example doesn't want to work with people who went through specific experiences
 });
 
-const User = mongoose.model("User", userSchema);
-module.exports = User;
+const Translator = mongoose.model("Translator", translatorSchema);
+module.exports = Translator;

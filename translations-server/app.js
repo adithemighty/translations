@@ -55,31 +55,115 @@ app.set("views", path.join(__dirname, "../translations-client/views"));
 app.set("view engine", "hbs");
 
 //PASSPORT SETUP
-// require("./handlers/auth");
 passport.serializeUser((user, cb) => {
-    cb(null, user.id);
+  cb(null, { id: user.id, role: user.collection.collectionName });
 });
 
-passport.deserializeUser((id, cb) => {
-    User.findById(id, (err, user) => {
-        if (err) {
-            return cb(err);
-        }
-        cb(null, user);
+passport.deserializeUser((user, cb) => {
+  if (user.role === "translators") {
+    Translator.findById(user.id, (err, user) => {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, user);
     });
+  } else if (user.role === "wos") {
+    WO.findById(user.id, (err, user) => {
+      if (err) {
+        return cb(err);
+      }
+      cb(null, user);
+    });
+  }
 });
+
+// passport.use(
+//   "local-login",
+//   new LocalStrategy((username, password, next) => {
+//     //TODO ADD AUTH WITH EMAIL
+//     console.log("signin");
+
+//     User.findOne({ username }, (err, user) => {
+//       if (err) {
+//         return next(err);
+//       }
+//       if (!user) {
+//         return next(null, false, { message: "Incorrect username" });
+//       }
+//       if (!bcrypt.compareSync(password, user.password)) {
+//         return next(null, false, { message: "Incorrect password" });
+//       }
+
+//       return next(null, user);
+//     });
+//   })
+// );
 
 passport.use(
-    "local-login",
-    new LocalStrategy((username, password, next) => {
-        //TODO ADD AUTH WITH EMAIL
+  "local-signup",
+  new LocalStrategy(
+    { passReqToCallback: true },
+    (req, username, password, next) => {
+      // To avoid race conditions
+      const { email, role, idNumber } = req.body;
+      process.nextTick(() => {
+        const hashPass = bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+        //check for roles: either WO or translator
 
-        User.findOne({ username }, (err, user) => {
-            if (err) {
+        if (role === "Volunteer" || role === "Professional") {
+          Translator.findOne(
+            {
+              username
+            },
+            (err, user) => {
+              if (err) {
                 return next(err);
+              }
+              if (user) {
+                return next(null, false);
+              } else {
+                const newTranslator = new Translator({
+                  username,
+                  email,
+                  password: hashPass,
+                  role
+                });
+
+                newTranslator.save(err => {
+                  if (err) {
+                    next(null, false, { message: newTranslator.errors });
+                  }
+                  return next(null, newTranslator);
+                });
+              }
             }
-            if (!user) {
-                return next(null, false, { message: "Incorrect username" });
+          );
+        } else if (role === "wo") {
+          WO.findOne(
+            {
+              username
+            },
+            (err, user) => {
+              if (err) {
+                return next(err);
+              }
+              if (user) {
+                return next(null, false);
+              } else {
+                const newWo = new WO({
+                  username,
+                  email,
+                  password: hashPass,
+                  idNumber
+                });
+
+                newWo.save(err => {
+                  if (err) {
+                    next(null, false, { message: newWo.errors });
+                  }
+                  return next(null, newWo);
+                });
+              }
             }
             if (!bcrypt.compareSync(password, user.password)) {
                 return next(null, false, { message: "Incorrect password" });
